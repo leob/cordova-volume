@@ -18,6 +18,7 @@ import android.provider.Settings.System;
 public class Volume extends CordovaPlugin {
 
     private static final int STREAM = AudioManager.STREAM_MUSIC;
+    private int stream = STREAM;
 
     public class SettingsContentObserver extends ContentObserver {
 
@@ -64,8 +65,10 @@ public class Volume extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if ("getVolume".equals(action)) {
-            int stream = args.length() > 0 ? args.getInt(0) : STREAM;
+        if ("setStream".equals(action)) {
+            stream = args.length() > 0 ? args.getInt(0) : STREAM;
+            return true;
+        } else if ("getVolume".equals(action)) {
             triggerEvent(callbackContext, currentVolume(), false);
             return true;
         } else if ("setVolumenChangeCallback".equals(action)) {
@@ -76,7 +79,7 @@ public class Volume extends CordovaPlugin {
         return false;
     }
 
-    private double currentVolume(int stream) {
+    private double currentVolume() {
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         int volume = audioManager.getStreamVolume(stream);
         if (volume == 0) {

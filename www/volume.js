@@ -5,10 +5,12 @@ var volume = {
    * @return Volume of the device. The volume gets normalized to the
    *         range of 0.0 to 1.0.
    */
-  getVolume: function (callback, stream) {
-    var args = stream ? [stream] : [];
+  getVolume: function (callback) {
+    cordova.exec(callback, null, 'Volume', 'getVolume', []);
+  },
 
-    cordova.exec(callback, null, 'Volume', 'getVolume', args);
+  setStream: function (stream) {
+    cordova.exec(null, null, 'Volume', 'setStream', [stream]);
   },
 
   setVolumeChangeCallback: function (callback) {
