@@ -65,6 +65,7 @@ public class Volume extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if ("getVolume".equals(action)) {
+            int stream = args.length() > 0 ? args.getInt(0) : STREAM;
             triggerEvent(callbackContext, currentVolume(), false);
             return true;
         } else if ("setVolumenChangeCallback".equals(action)) {
@@ -75,13 +76,13 @@ public class Volume extends CordovaPlugin {
         return false;
     }
 
-    private double currentVolume() {
+    private double currentVolume(int stream) {
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        int volume = audioManager.getStreamVolume(STREAM);
+        int volume = audioManager.getStreamVolume(stream);
         if (volume == 0) {
             return 0.0;
         }
-        return 1.0 * volume / audioManager.getStreamMaxVolume(STREAM);
+        return 1.0 * volume / audioManager.getStreamMaxVolume(stream);
     }
 
     private void triggerChangedEvent(double volume) {
@@ -89,7 +90,8 @@ public class Volume extends CordovaPlugin {
     }
 
     private void triggerEvent(CallbackContext callback, double volume, boolean keepCallback) {
-        PluginResult result = new PluginResult(PluginResult.Status.OK, (float) currentVolume());
+        //PluginResult result = new PluginResult(PluginResult.Status.OK, (float) currentVolume());
+        PluginResult result = new PluginResult(PluginResult.Status.OK, (float) volume);
         result.setKeepCallback(keepCallback);
         callback.sendPluginResult(result);
     }
