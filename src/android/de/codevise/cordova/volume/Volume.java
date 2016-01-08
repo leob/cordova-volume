@@ -89,11 +89,12 @@ public class Volume extends CordovaPlugin {
     }
 
     private void triggerChangedEvent(double volume) {
-        triggerEvent(changedEventCallback, volume, true);
+        if (changedEventCallback != null) {
+            triggerEvent(changedEventCallback, volume, true);
+        }
     }
 
     private void triggerEvent(CallbackContext callback, double volume, boolean keepCallback) {
-        //PluginResult result = new PluginResult(PluginResult.Status.OK, (float) currentVolume());
         PluginResult result = new PluginResult(PluginResult.Status.OK, (float) volume);
         result.setKeepCallback(keepCallback);
         callback.sendPluginResult(result);
